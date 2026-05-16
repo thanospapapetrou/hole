@@ -45,9 +45,9 @@ class Hole {
                     await new Shader(this.#gl, this.#gl.VERTEX_SHADER, Hole.#SHADERS.vertex),
                     await new Shader(this.#gl, this.#gl.FRAGMENT_SHADER, Hole.#SHADERS.fragment),
                     Hole.#UNIFORMS, Hole.#ATTRIBUTES);
-            this.#positions = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, new Float32Array(Hole.#DATA.positions));
-            this.#colors = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, new Float32Array(Hole.#DATA.colors));
-            this.#indices = new VertexBufferObject(this.#gl, this.#gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(Hole.#DATA.indices));
+            this.#positions = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 3, new Float32Array(Hole.#DATA.positions));
+            this.#colors = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 4, new Float32Array(Hole.#DATA.colors));
+            this.#indices = new VertexBufferObject(this.#gl, this.#gl.ELEMENT_ARRAY_BUFFER, 3, new Uint16Array(Hole.#DATA.indices));
             this.#cube = new VertexArrayObject(this.#gl, [this.#positions, this.#colors], this.#indices);
             this.#velocity = {azimuth: 0.0, elevation: 0.0, distance: 0.0};
             this.#time = 0;
@@ -106,10 +106,10 @@ class Hole {
         this.#program.view = this.#view;
         this.#program.model = this.#model;
         this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#positions.vbo);
-        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexPosition, 3, this.#gl.FLOAT, false, 0, 0);
+        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexPosition, this.#positions.size, this.#gl.FLOAT, false, 0, 0);
         this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexPosition);
         this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#colors.vbo);
-        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexColor, 4, this.#gl.FLOAT, false, 0, 0);
+        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexColor, this.#colors.size, this.#gl.FLOAT, false, 0, 0);
         this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexColor);
         this.#gl.bindBuffer(this.#gl.ELEMENT_ARRAY_BUFFER, this.#indices.vbo);
 //        this.#gl.bindVertexArray(this.#cube.vao);
