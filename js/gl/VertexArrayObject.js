@@ -1,23 +1,28 @@
 'use strict';
 
 class VertexArrayObject {
+    #gl;
     #vao;
+    #count;
+    #type;
 
-    constructor(gl, attributes, indices) {
-        this.#vao = gl.createVertexArray();
-        gl.bindVertexArray(this.#vao);
-        for (let attribute of attributes) {
-            gl.bindBuffer(gl.ARRAY_BUFFER, attribute.vbo.vbo);
-            gl.vertexAttribPointer(attribute.location, attribute.size, attribute.type, false, 0, 0);
-            gl.enableVertexAttribArray(attribute.location);
-            gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    constructor(gl, program, attributes, indices) {
+        this.#gl = gl;
+        this.#vao = this.#gl.createVertexArray();
+        this.#gl.bindVertexArray(this.#vao);
+        for (let attribute in attributes) {
+            program[attribute] = attributes[attribute];
         }
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indices.vbo);
-        gl.bindVertexArray(null);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+        this.#gl.bindBuffer(this.#gl.ELEMENT_ARRAY_BUFFER, indices.vbo);
+        this.#gl.bindVertexArray(null);
+        this.#gl.bindBuffer(this.#gl.ELEMENT_ARRAY_BUFFER, null);
+        this.#count = indices.count;
+        this.#type = indices.type;
     }
 
-    get vao() {
-        return this.#vao;
+    render() {
+        this.#gl.bindVertexArray(this.#vao);
+        this.#gl.drawElements(this.#gl.TRIANGLES, this.#count, this.#type, 0);
+        this.#gl.bindVertexArray(null);
     }
 }

@@ -18,21 +18,23 @@ class Program {
             throw new Error(Program.#ERROR_LINKING(vertex, fragment, info));
         }
         for (let uniform of uniforms) {
+            const location = gl.getUniformLocation(this.#program, uniform);
             Object.defineProperty(this, uniform, {set: function (value) {
-                gl.uniformMatrix4fv(gl.getUniformLocation(this.#program, uniform), false, value);
+                gl.uniformMatrix4fv(location, false, value);
             }});
         }
-        this.#attributes = {};
         for (let attribute of attributes) {
-            this.#attributes[attribute] = gl.getAttribLocation(this.#program, attribute);
+            const location = gl.getAttribLocation(this.#program, attribute);
+            Object.defineProperty(this, attribute, {set: function (vbo) {
+                gl.bindBuffer(gl.ARRAY_BUFFER, vbo.vbo);
+                gl.vertexAttribPointer(location, vbo.size, vbo.type, false, 0, 0);
+                gl.enableVertexAttribArray(location);
+                gl.bindBuffer(gl.ARRAY_BUFFER, null);
+            }});
         }
     }
 
     get program() {
         return this.#program;
-    }
-
-    get attributes() {
-        return this.#attributes;
     }
 }

@@ -2,8 +2,6 @@
 
 class Hole {
     // TODO move
-    // TODO setters for attributes and uniforms
-    // TODO use VAO
     // TODO lights in shaders, uniform color etc
     static #ATTRIBUTES = ['aVertexPosition', 'aVertexColor'];
     static #AZIMUTH = {min: 0.0, max: 2 * Math.PI, velocity: Math.PI / 2};
@@ -25,9 +23,6 @@ class Hole {
 
     #gl;
     #program;
-    #positions;
-    #colors;
-    #indices;
     #cube;
     #velocity;
     #time;
@@ -45,10 +40,10 @@ class Hole {
                     await new Shader(this.#gl, this.#gl.VERTEX_SHADER, Hole.#SHADERS.vertex),
                     await new Shader(this.#gl, this.#gl.FRAGMENT_SHADER, Hole.#SHADERS.fragment),
                     Hole.#UNIFORMS, Hole.#ATTRIBUTES);
-            this.#positions = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 3, new Float32Array(Hole.#DATA.positions));
-            this.#colors = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 4, new Float32Array(Hole.#DATA.colors));
-            this.#indices = new VertexBufferObject(this.#gl, this.#gl.ELEMENT_ARRAY_BUFFER, 3, new Uint16Array(Hole.#DATA.indices));
-            this.#cube = new VertexArrayObject(this.#gl, [this.#positions, this.#colors], this.#indices);
+            this.#cube = new VertexArrayObject(this.#gl, this.#program, {
+                        aVertexPosition: new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 3, new Float32Array(Hole.#DATA.positions)),
+                        aVertexColor: new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 4, new Float32Array(Hole.#DATA.colors))
+                    }, new VertexBufferObject(this.#gl, this.#gl.ELEMENT_ARRAY_BUFFER, 3, new Uint16Array(Hole.#DATA.indices)));
             this.#velocity = {azimuth: 0.0, elevation: 0.0, distance: 0.0};
             this.#time = 0;
             this.azimuth = Hole.#AZIMUTH.min;
@@ -105,18 +100,9 @@ class Hole {
         this.#program.projection = this.#projection;
         this.#program.view = this.#view;
         this.#program.model = this.#model;
-        this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#positions.vbo);
-        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexPosition, this.#positions.size, this.#positions.type, false, 0, 0);
-        this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexPosition);
-        this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#colors.vbo);
-        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexColor, this.#colors.size, this.#colors.type, false, 0, 0);
-        this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexColor);
-        this.#gl.bindBuffer(this.#gl.ELEMENT_ARRAY_BUFFER, this.#indices.vbo);
-//        this.#gl.bindVertexArray(this.#cube.vao);
-        this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#indices.type, 0);
+        this.#cube.render();
         this.#program.model = this.#model2;
-        this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#indices.type, 0);
-
+        this.#cube.render();
         requestAnimationFrame(this.render.bind(this));
     }
 

@@ -5,6 +5,7 @@ class VertexBufferObject {
 
     #vbo;
     #size;
+    #count;
     #type;
 
     static #getType(gl, data) {
@@ -23,6 +24,7 @@ class VertexBufferObject {
         gl.bufferData(type, data, WebGLRenderingContext.STATIC_DRAW);
         gl.bindBuffer(type, null);
         this.#size = size;
+        this.#count = data.length;
         this.#type = VertexBufferObject.#getType(gl, data);
     }
 
@@ -32,6 +34,10 @@ class VertexBufferObject {
 
     get size() {
         return this.#size;
+    }
+
+    get count() {
+        return this.#count;
     }
 
     get type() {
