@@ -17,9 +17,10 @@ class Program {
             gl.deleteProgram(this.#program);
             throw new Error(Program.#ERROR_LINKING(vertex, fragment, info));
         }
-        this.#uniforms = {};
         for (let uniform of uniforms) {
-            this.#uniforms[uniform] = gl.getUniformLocation(this.#program, uniform);
+            Object.defineProperty(this, uniform, {set: function (value) {
+                gl.uniformMatrix4fv(gl.getUniformLocation(this.#program, uniform), false, value);
+            }});
         }
         this.#attributes = {};
         for (let attribute of attributes) {
@@ -29,10 +30,6 @@ class Program {
 
     get program() {
         return this.#program;
-    }
-
-    get uniforms() {
-        return this.#uniforms;
     }
 
     get attributes() {

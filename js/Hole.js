@@ -28,6 +28,7 @@ class Hole {
     #positions;
     #colors;
     #indices;
+    #cube;
     #velocity;
     #time;
 
@@ -47,6 +48,7 @@ class Hole {
             this.#positions = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, new Float32Array(Hole.#DATA.positions));
             this.#colors = new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, new Float32Array(Hole.#DATA.colors));
             this.#indices = new VertexBufferObject(this.#gl, this.#gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(Hole.#DATA.indices));
+            this.#cube = new VertexArrayObject(this.#gl, [this.#positions, this.#colors], this.#indices);
             this.#velocity = {azimuth: 0.0, elevation: 0.0, distance: 0.0};
             this.#time = 0;
             this.azimuth = Hole.#AZIMUTH.min;
@@ -100,9 +102,9 @@ class Hole {
         this.idle(time);
         this.#gl.clear(this.#gl.COLOR_BUFFER_BIT | this.#gl.DEPTH_BUFFER_BIT);
         this.#gl.useProgram(this.#program.program);
-        this.#gl.uniformMatrix4fv(this.#program.uniforms.projection, false, this.#projection);
-        this.#gl.uniformMatrix4fv(this.#program.uniforms.view, false, this.#view);
-        this.#gl.uniformMatrix4fv(this.#program.uniforms.model, false, this.#model);
+        this.#program.projection = this.#projection;
+        this.#program.view = this.#view;
+        this.#program.model = this.#model;
         this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#positions.vbo);
         this.#gl.vertexAttribPointer(this.#program.attributes.aVertexPosition, 3, this.#gl.FLOAT, false, 0, 0);
         this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexPosition);
@@ -110,9 +112,11 @@ class Hole {
         this.#gl.vertexAttribPointer(this.#program.attributes.aVertexColor, 4, this.#gl.FLOAT, false, 0, 0);
         this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexColor);
         this.#gl.bindBuffer(this.#gl.ELEMENT_ARRAY_BUFFER, this.#indices.vbo);
+//        this.#gl.bindVertexArray(this.#cube.vao);
         this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#gl.UNSIGNED_SHORT, 0);
-        this.#gl.uniformMatrix4fv(this.#program.uniforms.model, false, this.#model2);
+        this.#program.model = this.#model2;
         this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#gl.UNSIGNED_SHORT, 0);
+
         requestAnimationFrame(this.render.bind(this));
     }
 

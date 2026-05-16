@@ -8,8 +8,7 @@ class VertexArrayObject {
         gl.bindVertexArray(this.#vao);
         for (let attribute of attributes) {
             gl.bindBuffer(gl.ARRAY_BUFFER, attribute.vbo.vbo);
-            gl.vertexAttribPointer(attribute.location, attribute.size, attribute.type, attribute.normalized ?? false,
-                    attribute.stride ?? 0, attribute.offset ?? 0);
+            gl.vertexAttribPointer(attribute.location, attribute.size, attribute.type, false, 0, 0);
             gl.enableVertexAttribArray(attribute.location);
             gl.bindBuffer(gl.ARRAY_BUFFER, null);
         }
