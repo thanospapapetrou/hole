@@ -106,16 +106,16 @@ class Hole {
         this.#program.view = this.#view;
         this.#program.model = this.#model;
         this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#positions.vbo);
-        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexPosition, this.#positions.size, this.#gl.FLOAT, false, 0, 0);
+        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexPosition, this.#positions.size, this.#positions.type, false, 0, 0);
         this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexPosition);
         this.#gl.bindBuffer(this.#gl.ARRAY_BUFFER, this.#colors.vbo);
-        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexColor, this.#colors.size, this.#gl.FLOAT, false, 0, 0);
+        this.#gl.vertexAttribPointer(this.#program.attributes.aVertexColor, this.#colors.size, this.#colors.type, false, 0, 0);
         this.#gl.enableVertexAttribArray(this.#program.attributes.aVertexColor);
         this.#gl.bindBuffer(this.#gl.ELEMENT_ARRAY_BUFFER, this.#indices.vbo);
 //        this.#gl.bindVertexArray(this.#cube.vao);
-        this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#gl.UNSIGNED_SHORT, 0);
+        this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#indices.type, 0);
         this.#program.model = this.#model2;
-        this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#gl.UNSIGNED_SHORT, 0);
+        this.#gl.drawElements(this.#gl.TRIANGLES, 36, this.#indices.type, 0);
 
         requestAnimationFrame(this.render.bind(this));
     }
