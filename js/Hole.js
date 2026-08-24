@@ -34,9 +34,9 @@ class Hole {
             this.#program = await new Program(this.#gl, Hole.#PROGRAM.shaders.vertex, Hole.#PROGRAM.shaders.fragment,
                     Hole.#PROGRAM.uniforms, Hole.#PROGRAM.attributes);
             this.#cube = new VertexArrayObject(this.#gl, this.#program, {
-                        aVertexPosition: new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 3, new Float32Array(Hole.#DATA.positions)),
-                        aVertexColor: new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 4, new Float32Array(Hole.#DATA.colors))
-                    }, new VertexBufferObject(this.#gl, this.#gl.ELEMENT_ARRAY_BUFFER, 3, new Uint16Array(Hole.#DATA.indices)));
+                        aVertexPosition: {size: 3, data: new Float32Array(Hole.#DATA.positions)},
+                        aVertexColor: {size: 4, data: new Float32Array(Hole.#DATA.colors)}
+                    }, {size: 3, data: new Uint16Array(Hole.#DATA.indices)});
             this.#velocity = {azimuth: 0.0, elevation: 0.0, distance: 0.0};
             this.#time = 0;
             this.azimuth = Hole.#LIMITS.azimuth.min;
