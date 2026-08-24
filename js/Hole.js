@@ -31,9 +31,7 @@ class Hole {
     constructor(gl) {
         this.#gl = gl;
         return (async () => {
-            this.#program = new Program(this.#gl,
-                    await new Shader(this.#gl, this.#gl.VERTEX_SHADER, Hole.#PROGRAM.shaders.vertex),
-                    await new Shader(this.#gl, this.#gl.FRAGMENT_SHADER, Hole.#PROGRAM.shaders.fragment),
+            this.#program = await new Program(this.#gl, Hole.#PROGRAM.shaders.vertex, Hole.#PROGRAM.shaders.fragment,
                     Hole.#PROGRAM.uniforms, Hole.#PROGRAM.attributes);
             this.#cube = new VertexArrayObject(this.#gl, this.#program, {
                         aVertexPosition: new VertexBufferObject(this.#gl, this.#gl.ARRAY_BUFFER, 3, new Float32Array(Hole.#DATA.positions)),
